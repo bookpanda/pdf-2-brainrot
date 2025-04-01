@@ -31,6 +31,7 @@ Download these tools before you start working on the project.
 
 ## Setup
 - like backend
+- Run `poetry run streamlit run app.py` to start the application
 
 ## Tips
 - Swagger is available at `http://localhost:8000/docs`
