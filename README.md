@@ -27,6 +27,11 @@ Download these tools before you start working on the project.
 6. In VSCode, `Ctrl + Shift + P` and type `Python: Select Interpreter`, select `Enter interpreter path...` and paste the path of the virtual environment. This will allow intellisense for the project
 7. Run `poetry run python run.py` to start the application
 
+# Frontend (/frontend)
+
+## Setup
+- like backend
+
 ## Tips
 - Swagger is available at `http://localhost:8000/docs`
 - If you don't want to see `__pycache__` folders, add this to VSCode's `settings.json` file:
