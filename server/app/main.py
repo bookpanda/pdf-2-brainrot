@@ -1,10 +1,10 @@
-from app.api import items
+from app.api import pdfs
 from app.config import settings
 from fastapi import FastAPI
 
 app = FastAPI()
 
-app.include_router(items.router, prefix="/items", tags=["items"])
+app.include_router(pdfs.router, prefix="/pdfs", tags=["pdfs"])
 
 
 @app.get("/")
