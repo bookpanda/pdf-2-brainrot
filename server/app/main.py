@@ -10,5 +10,5 @@ app.include_router(items.router, prefix="/items", tags=["items"])
 @app.get("/")
 def read_root():
     return {
-        "app_name": settings.app_name,
+        "app_name": settings.APP_NAME,
     }

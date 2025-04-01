@@ -32,6 +32,7 @@ Download these tools before you start working on the project.
 # these envs are available by doing terraform apply in /infrastructure
 AWS_ACCESS_KEY_ID= # access_key_id
 AWS_SECRET_ACCESS_KEY= # after applying, run `terraform output -raw secret_access_key`
+AWS_REGION= # region
 AWS_BUCKET_NAME= # bucket_name
 ```
 
