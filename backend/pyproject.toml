@@ -2,9 +2,7 @@
 name = "server"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Idhibhat Pankam",email = "marginpankam@gmail.com"}
-]
+authors = []
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
