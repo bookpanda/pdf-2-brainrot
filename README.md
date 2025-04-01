@@ -15,6 +15,7 @@ Download these tools before you start working on the project.
 - poetry
 - `Black Formatter` VSCode extension (also set format on save, and set as default formatter for python in `settings.json`)
 
+# Backend (/backend)
 
 ## Setup
 
@@ -24,9 +25,10 @@ Download these tools before you start working on the project.
 4. Run `poetry env activate` to activate the virtual environment
 5. Run `poetry env info --path` to get the path of the virtual environment
 6. In VSCode, `Ctrl + Shift + P` and type `Python: Select Interpreter`, select `Enter interpreter path...` and paste the path of the virtual environment. This will allow intellisense for the project
-7. Run `poetry run uvicorn app.main:app --reload` to start the application (`--reload` is watch mode)
+7. Run `poetry run python run.py` to start the application
 
 ## Tips
+- Swagger is available at `http://localhost:8000/docs`
 - If you don't want to see `__pycache__` folders, add this to VSCode's `settings.json` file:
 ```json
 "files.exclude": {
