@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
 # Use IAM role on EC2, so no need for explicit AWS credentials
 polly_client = boto3.client("polly", region_name="us-east-1")
 

@@ -13,7 +13,7 @@ Download these tools before you start working on the project.
 
 - python 3.12
 - poetry
-- Prettier VSCode extension (also set format on save)
+- `Black Formatter` VSCode extension (also set format on save, and set as default formatter for python in `settings.json`)
 
 
 ## Setup
