@@ -1,7 +1,7 @@
 from typing import Dict
 
 from app.api.dtos.pdf import GetPresignedUrl
-from app.constants import PDF_MIME_TYPE
+from app.constants import PDF_MIME_TYPE, PDF_UPLOAD_FOLDER
 from app.data.s3 import generate_presigned_url
 from fastapi import APIRouter, HTTPException
 
@@ -25,7 +25,7 @@ def get_presigned_url(presigned_url_request: GetPresignedUrl) -> Dict[str, str]:
     """
     try:
         presigned_url = generate_presigned_url(
-            presigned_url_request.filename, PDF_MIME_TYPE
+            PDF_UPLOAD_FOLDER, presigned_url_request.filename, PDF_MIME_TYPE
         )
 
         return {"url": presigned_url}
