@@ -33,16 +33,17 @@ resource "aws_s3_bucket_acl" "uploads_acl" {
   acl    = "public-read"
 }
 
-resource "aws_iam_policy" "wordpress_s3_policy" {
+resource "aws_iam_policy" "s3_policy" {
   name        = "pdf2br-s3-policy"
-  description = "Policy to allow pdf2br EC2 instance to access S3 for file uploads"
+  description = "Policy to allow access to the S3 bucket"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Action = [
-          "s3:*",
-          "s3-object-lambda:*"
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
         ]
         Effect = "Allow"
         Resource = [
@@ -54,8 +55,8 @@ resource "aws_iam_policy" "wordpress_s3_policy" {
   })
 }
 
-resource "aws_iam_role" "pdf2br_instance_role" {
-  name = "${var.bucket_name}-pdf2br-instance-role"
+resource "aws_iam_role" "s3_instance_role" {
+  name = "${var.bucket_name}-instance-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -71,12 +72,12 @@ resource "aws_iam_role" "pdf2br_instance_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "wordpress_s3_policy_attachment" {
-  policy_arn = aws_iam_policy.wordpress_s3_policy.arn
-  role       = aws_iam_role.pdf2br_instance_role.name
+resource "aws_iam_role_policy_attachment" "s3_policy_attachment" {
+  policy_arn = aws_iam_policy.s3_policy.arn
+  role       = aws_iam_role.s3_instance_role.name
 }
 
-resource "aws_iam_instance_profile" "pdf2br_instance_profile" {
+resource "aws_iam_instance_profile" "s3_instance_profile" {
   name = "${var.bucket_name}-instance-profile"
-  role = aws_iam_role.pdf2br_instance_role.name
+  role = aws_iam_role.s3_instance_role.name
 }

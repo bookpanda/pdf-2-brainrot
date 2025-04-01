@@ -27,6 +27,14 @@ Download these tools before you start working on the project.
 6. In VSCode, `Ctrl + Shift + P` and type `Python: Select Interpreter`, select `Enter interpreter path...` and paste the path of the virtual environment. This will allow intellisense for the project
 7. Run `poetry run python run.py` to start the application
 
+## .env
+```bash
+# these envs are available by doing terraform apply in /infrastructure
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_BUCKET_NAME= # bucket_name
+```
+
 # Frontend (/frontend)
 
 ## Setup
