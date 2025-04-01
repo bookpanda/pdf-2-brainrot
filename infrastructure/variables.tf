@@ -8,7 +8,12 @@ variable "availability_zone" {
   type        = string
 }
 
-variable "bucket_name" {
-  description = "The name of the S3 bucket"
+variable "bucket_prefix" {
+  description = "The prefix of the name of the S3 bucket"
+  type        = string
+}
+
+variable "sns_topic_endpoint" {
+  description = "The endpoint for the SNS topic to send notifications to"
   type        = string
 }
