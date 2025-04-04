@@ -40,3 +40,38 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
         return response
     except (NoCredentialsError, ClientError) as e:
         raise Exception(f"Error generating presigned URL: {e}")
+
+
+def get_keys_in_folder(folder: str) -> list[str]:
+    """
+    List all files in a specific S3 folder.
+
+    :param folder: The folder path in the S3 bucket
+    :return: List of file names
+    """
+    try:
+        response = s3_client.list_objects_v2(
+            Bucket=settings.AWS_BUCKET_NAME,
+            Prefix=folder + "/",
+        )
+
+        if "Contents" in response:
+            return [item["Key"] for item in response["Contents"]]
+        else:
+            return []
+    except ClientError as e:
+        raise Exception(f"Error listing files in folder: {e}")
+
+
+def get_file_by_key(key: str) -> bytes:
+    """
+    Retrieve a file from S3 using its key.
+
+    :param key: The key of the file in the S3 bucket
+    :return: File content as bytes
+    """
+    try:
+        response = s3_client.get_object(Bucket=settings.AWS_BUCKET_NAME, Key=key)
+        return response["Body"].read()
+    except ClientError as e:
+        raise Exception(f"Error retrieving file by key: {e}")
