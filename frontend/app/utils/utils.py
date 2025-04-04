@@ -10,9 +10,10 @@ def get_presigned_url(filename: str) -> str:
     """
     try:
         response = requests.post(
-            f"{settings.API_URL}/get-presigned-url/",
+            f"{settings.API_URL}/pdfs/get-presigned-url/",
             json={"filename": filename},
         )
+
         return response.json().get("url")
 
     except requests.RequestException as e:

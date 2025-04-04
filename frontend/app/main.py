@@ -1,5 +1,6 @@
 import requests
 import streamlit as st
+from app.utils import get_presigned_url
 
 st.title("PDF to Brainrot")
 st.write("Hi yall! This is a simple app that converts PDF files to brainrot.")
@@ -11,11 +12,12 @@ if uploaded_file is not None:
     st.write(f"File uploaded: {uploaded_file.name}")
 
     if st.button("Convert to Brainrot Shorts"):
-        files = {"file": (uploaded_file.name, uploaded_file, "application/pdf")}
+        presigned_url = get_presigned_url(uploaded_file.name)
+        print(f"Presigned URL: {presigned_url}")
 
-        response = requests.post(
-            "https://example.com/convert_to_brainrot",
-            files=files,
+        response = requests.put(
+            presigned_url,
+            data=uploaded_file,
         )
 
         if response.status_code == 200:
