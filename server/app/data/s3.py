@@ -38,7 +38,7 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
             ExpiresIn=3600,
         )
 
-        return response
+        return {"url": response, "key": s3_key.split("/")[-1]}
     except (NoCredentialsError, ClientError) as e:
         raise HTTPException(
             status_code=500,

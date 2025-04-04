@@ -16,7 +16,7 @@ def get_presigned_url(presigned_url_request: GetPresignedUrl) -> dict[str, str]:
             PDF_UPLOAD_FOLDER, presigned_url_request.filename, PDF_MIME_TYPE
         )
 
-        return {"url": presigned_url}
+        return presigned_url
 
     except HTTPException as e:
         raise e
