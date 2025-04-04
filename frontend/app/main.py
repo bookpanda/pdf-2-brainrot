@@ -12,8 +12,8 @@ if uploaded_file is not None:
     st.write(f"File uploaded: {uploaded_file.name}")
 
     if st.button("Convert to Brainrot Shorts"):
-        presigned_url = get_presigned_url(uploaded_file.name)
-        print(f"Presigned URL: {presigned_url}")
+        presigned_url, key = get_presigned_url(uploaded_file.name)
+        print(f"Presigned URL: {presigned_url}, Key: {key}")
         file_bytes = uploaded_file.getvalue()
 
         response = requests.put(
@@ -26,6 +26,7 @@ if uploaded_file is not None:
 
         if response.status_code == 200:
             st.success("Successfully converted to Brainrot Shorts!")
+            st.write(f"Key: {key}")
             # st.write(response.json().get("brainrot_shorts"))
         else:
             st.error(f"Conversion failed, status code: {response.status_code}")
