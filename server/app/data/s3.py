@@ -42,7 +42,7 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
         raise Exception(f"Error generating presigned URL: {e}")
 
 
-def get_keys_in_folder(folder: str) -> list[str]:
+def get_files_in_folder(folder: str) -> list[str]:
     """
     List all files in a specific S3 folder.
 
@@ -56,22 +56,19 @@ def get_keys_in_folder(folder: str) -> list[str]:
         )
 
         if "Contents" in response:
-            return [item["Key"] for item in response["Contents"]]
+            return [
+                {
+                    "key": item["Key"],
+                    "url": s3_client.generate_presigned_url(
+                        "get_object",
+                        Params={"Bucket": settings.AWS_BUCKET_NAME, "Key": item["Key"]},
+                        ExpiresIn=3600,
+                    ),
+                }
+                for item in response["Contents"]
+                if item["Key"] != folder + "/"  # ignore folder itself
+            ]
         else:
             return []
     except ClientError as e:
         raise Exception(f"Error listing files in folder: {e}")
-
-
-def get_file_by_key(key: str) -> bytes:
-    """
-    Retrieve a file from S3 using its key.
-
-    :param key: The key of the file in the S3 bucket
-    :return: File content as bytes
-    """
-    try:
-        response = s3_client.get_object(Bucket=settings.AWS_BUCKET_NAME, Key=key)
-        return response["Body"].read()
-    except ClientError as e:
-        raise Exception(f"Error retrieving file by key: {e}")
