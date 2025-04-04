@@ -1,3 +1,5 @@
+import uuid
+
 import boto3
 from app.config import settings
 from botocore.exceptions import ClientError, NoCredentialsError
@@ -20,11 +22,16 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
     :return: Presigned URL
     """
     try:
+        name, ext = filename.rsplit(".", 1)
+        random_suffix = uuid.uuid4().hex[:8]
+        unique_filename = f"{name}_{random_suffix}.{ext}"
+        s3_key = f"{folder}/{unique_filename}"
+
         response = s3_client.generate_presigned_url(
             "put_object",
             Params={
                 "Bucket": settings.AWS_BUCKET_NAME,
-                "Key": f"{folder}/{filename}",
+                "Key": s3_key,
                 "ContentType": file_type,
             },
             ExpiresIn=3600,
