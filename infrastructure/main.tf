@@ -15,7 +15,7 @@ module "sns" {
   source             = "./modules/sns"
   bucket_name        = local.bucket_name
   bucket_id          = module.s3.bucket_id
-  sns_topic_endpoint = var.sns_topic_endpoint
+  sns_topic_endpoint = "${var.sns_topic_endpoint}/sns/webhook"
 }
 
 module "iam" {
