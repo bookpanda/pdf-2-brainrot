@@ -1,6 +1,6 @@
 import requests
 import streamlit as st
-from app.utils import get_presigned_url
+from app.utils import get_presigned_url, get_processed_videos
 
 st.title("PDF to Brainrot")
 st.write("Hi yall! This is a simple app that converts PDF files to brainrot.")
@@ -30,3 +30,21 @@ if uploaded_file is not None:
             # st.write(response.json().get("brainrot_shorts"))
         else:
             st.error(f"Conversion failed, status code: {response.status_code}")
+
+
+# ---- Display Processed Videos ----
+st.subheader("Processed Brainrot Shorts")
+video_files = get_processed_videos()
+
+video_files = get_processed_videos()
+
+if video_files:
+    num_columns = 3
+    columns = st.columns(num_columns)
+
+    for index, video in enumerate(video_files):
+        with columns[index % num_columns]:
+            st.video(video["url"])
+            st.write(f"**{video['key']}**")
+else:
+    st.write("No processed videos available.")
