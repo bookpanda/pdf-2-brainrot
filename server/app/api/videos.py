@@ -1,4 +1,4 @@
-from app.data.s3 import get_files_in_folder
+from app.data.s3 import get_files_in_folder, get_url_by_key
 from fastapi import APIRouter, HTTPException
 
 router = APIRouter()
@@ -14,18 +14,18 @@ def get_all_videos():
         print(files)
 
         return {"files": files}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except HTTPException as e:
+        raise e
 
 
-# @router.get("/{key_name}")
-# def get_video_by_key(key_name: str):
-#     """
-#     Get a file by its key from the S3 bucket.
-#     """
-#     try:
-#         file = get_file_by_key(f"videos/{key_name}")
+@router.get("/{key_name}")
+def get_video_by_key(key_name: str):
+    """
+    Get a video by its key from the S3 bucket.
+    """
+    try:
+        url = get_url_by_key(f"videos/{key_name}")
 
-#         return {"file": file}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+        return {"url": url}
+    except HTTPException as e:
+        raise e

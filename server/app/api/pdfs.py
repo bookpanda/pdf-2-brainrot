@@ -18,5 +18,5 @@ def get_presigned_url(presigned_url_request: GetPresignedUrl) -> dict[str, str]:
 
         return {"url": presigned_url}
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except HTTPException as e:
+        raise e

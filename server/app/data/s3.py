@@ -3,6 +3,7 @@ import uuid
 import boto3
 from app.config import settings
 from botocore.exceptions import ClientError, NoCredentialsError
+from fastapi import HTTPException
 
 s3_client = boto3.client(
     "s3",
@@ -39,7 +40,10 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
 
         return response
     except (NoCredentialsError, ClientError) as e:
-        raise Exception(f"Error generating presigned URL: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error generating presigned URL: {e}",
+        )
 
 
 def get_files_in_folder(folder: str) -> list[str]:
@@ -71,4 +75,38 @@ def get_files_in_folder(folder: str) -> list[str]:
         else:
             return []
     except ClientError as e:
-        raise Exception(f"Error listing files in folder: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error listing files in folder '{folder}': {e}",
+        )
+
+
+def get_url_by_key(key: str) -> str:
+    """
+    Generate a presigned URL to access a file in S3.
+
+    :param key: The S3 key of the file
+    :return: Presigned URL
+    :raises Exception: If the file does not exist or an error occurs
+    """
+    try:
+        # check if the file exists in S3
+        s3_client.head_object(Bucket=settings.AWS_BUCKET_NAME, Key=key)
+
+        return s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": settings.AWS_BUCKET_NAME, "Key": key},
+            ExpiresIn=3600,
+        )
+
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "404":
+            raise HTTPException(
+                status_code=404,
+                detail=f"File '{key}' not found in S3.",
+            )
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error generating presigned URL: {e}",
+            )
