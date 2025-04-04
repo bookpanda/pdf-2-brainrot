@@ -55,7 +55,7 @@ AWS_BUCKET_NAME= # bucket_name
 
 ## Setup
 - like backend (skip step 2, 7)
-- Run `poetry run streamlit run app.py` to start the application
+- Run `poetry run streamlit run ./app/app.py` to start the application
 
 ## Tips
 - Swagger is available at `http://localhost:8000/docs`
