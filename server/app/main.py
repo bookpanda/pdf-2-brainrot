@@ -1,10 +1,11 @@
-from app.api import pdfs, sns
+from app.api import pdfs, sns, videos
 from app.config import settings
 from fastapi import FastAPI
 
 app = FastAPI()
 
 app.include_router(pdfs.router, prefix="/pdfs", tags=["pdfs"])
+app.include_router(videos.router, prefix="/videos", tags=["videos"])
 app.include_router(sns.router, prefix="/sns", tags=["sns"])
 
 
