@@ -29,9 +29,9 @@ Download these tools before you start working on the project.
 source ./load_env.sh
 terraform apply
 ```
-7. Run `terraform output -raw secret_access_key` to get the secret access key for `backend setup`
+7. Run `terraform output -raw secret_access_key` to get the secret access key for `server setup`
 
-# Backend (/backend)
+# Server (/server)
 
 ## Setup
 
@@ -54,7 +54,7 @@ AWS_BUCKET_NAME= # bucket_name
 # Frontend (/frontend)
 
 ## Setup
-- like backend (skip step 2, 7)
+- like `server` (skip step 2, 7)
 - Run `poetry run streamlit run ./app/main.py` to start the application
 
 ## Tips
