@@ -28,11 +28,22 @@ resource "aws_instance" "backend" {
   }
 
   iam_instance_profile = var.s3_instance_profile_name
-
   key_name = aws_key_pair.generated_key_pair.key_name
+  user_data = data.template_file.user_data.rendered
 
   tags = {
     Name = "${var.vpc_name}-backend"
+  }
+}
+
+data "template_file" "user_data" {
+  template = file("${path.module}/user_data.sh")
+  vars = {
+    APP_NAME        = "${var.app_name}"
+    PORT            = "${var.app_port}"
+    AWS_REGION      = "${var.region}"
+    AWS_BUCKET_NAME = "${var.bucket_name}"
+    GITHUB_REPO     = "${var.github_repo}"
   }
 }
 
