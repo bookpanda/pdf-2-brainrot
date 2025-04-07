@@ -12,4 +12,8 @@ terraform taint module.ec2.aws_instance.backend
 
 # check user_data progress on ec2
 sudo tail -f /var/log/cloud-init-output.log
+
+sudo docker run -p 8000:8000 --name "test" ghcr.io/bookpanda/pdf-2-brainrot:latest
+docker run -p 8000:8000 --name "test" my-app
+
 ```

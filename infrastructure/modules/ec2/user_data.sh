@@ -5,29 +5,33 @@ export APP_NAME="${APP_NAME}"
 export PORT="${PORT}"
 export AWS_REGION="${AWS_REGION}"
 export AWS_BUCKET_NAME="${AWS_BUCKET_NAME}"
-export GITHUB_REPO="${GITHUB_REPO}"
 
-apt update -y
-apt install -y git curl unzip python3-poetry python3-venv
+sudo yum update -y
+sudo yum install -y docker
 
-cd /opt
-git clone "${GITHUB_REPO}"
-cd pdf-2-brainrot/backend
-echo "GitHub repo cloned"
+sudo systemctl enable docker
+sudo systemctl start docker
 
-poetry install
+sudo docker pull ghcr.io/bookpanda/pdf-2-brainrot:latest
 
-mkdir -p /etc/${APP_NAME}
-cat <<EOF > /etc/systemd/system/${APP_NAME}.service
+sudo docker run -d \
+  -p ${PORT}:${PORT} \
+  --name ${APP_NAME} \
+  -e APP_NAME="${APP_NAME}" \
+  -e PORT="${PORT}" \
+  -e AWS_REGION="${AWS_REGION}" \
+  -e AWS_BUCKET_NAME="${AWS_BUCKET_NAME}" \
+  ghcr.io/bookpanda/pdf-2-brainrot:latest
+
+cat <<EOF | sudo tee /etc/systemd/system/${APP_NAME}.service
 [Unit]
 Description=${APP_NAME}
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/poetry run python run.py
-WorkingDirectory=/opt/pdf-2-brainrot/backend
+ExecStart=/usr/bin/docker start -a ${APP_NAME}
+ExecStop=/usr/bin/docker stop ${APP_NAME}
 Restart=always
-EnvironmentFile=/etc/${APP_NAME}/env
 User=ubuntu
 
 [Install]
@@ -35,8 +39,8 @@ WantedBy=multi-user.target
 EOF
 echo "Systemd service created"
 
-systemctl daemon-reexec
-systemctl daemon-reload
-systemctl enable ${APP_NAME}
-systemctl start ${APP_NAME}
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable ${APP_NAME}
+sudo systemctl start ${APP_NAME}
 echo "Systemd service started"
