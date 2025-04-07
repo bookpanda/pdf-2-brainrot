@@ -1,6 +1,6 @@
 resource "tls_private_key" "generated_key" {
   algorithm = "RSA"
-  rsa_bits  = 4096
+  rsa_bits  = 2048
 }
 
 resource "aws_key_pair" "generated_key_pair" {
