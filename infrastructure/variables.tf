@@ -17,3 +17,8 @@ variable "sns_topic_endpoint" {
   description = "The endpoint for the SNS topic to send notifications to"
   type        = string
 }
+
+variable "ami" {
+  description = "AMI of backend EC2"
+  type = string
+}
