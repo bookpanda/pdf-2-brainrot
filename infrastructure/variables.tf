@@ -20,5 +20,22 @@ variable "sns_topic_endpoint" {
 
 variable "ami" {
   description = "AMI of backend EC2"
-  type = string
+  type        = string
+}
+
+variable "app_name" {
+  description = "App name in EC2"
+  type        = string
+  default     = "pdf-2-brainrot"
+}
+
+variable "app_port" {
+  description = "App port in EC2"
+  type        = string
+  default     = "8000"
+}
+
+variable "github_repo" {
+  description = "GitHub repo to clone in EC2"
+  type        = string
 }
