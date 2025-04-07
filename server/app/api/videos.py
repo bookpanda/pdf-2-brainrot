@@ -11,7 +11,6 @@ def get_all_videos():
     """
     try:
         files = get_files_in_folder("videos")
-        print(files)
 
         return {"files": files}
     except HTTPException as e:
