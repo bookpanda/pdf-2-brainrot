@@ -10,7 +10,10 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock* README.md /
 COPY /app/__init__.py /app/
 
-RUN poetry install --no-interaction
+RUN /bin/true\
+    && poetry config virtualenvs.create false \
+    && poetry install --no-interaction \
+    && rm -rf /root/.cache/pypoetry
 
 COPY . /app/
 
