@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
     AWS_REGION: str = os.getenv("AWS_REGION", "")
     AWS_BUCKET_NAME: str = os.getenv("AWS_BUCKET_NAME", "")
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
 
 settings = Settings()
