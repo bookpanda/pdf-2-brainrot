@@ -1,6 +1,7 @@
 import time
 import boto3
 from app.config import settings
+from google import genai
 
 textract_client = boto3.client(
     'textract',
@@ -11,9 +12,9 @@ s3_client = boto3.client(
     region_name=settings.AWS_REGION,
     endpoint_url=f"https://s3-{settings.AWS_REGION}.amazonaws.com",
 )
+gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 def start_text_detection(document):
-    print(document)
     response = textract_client.start_document_text_detection(
         DocumentLocation={
             'S3Object': {
@@ -40,6 +41,13 @@ def extract_text_from_response(response):
         if block["BlockType"] == "LINE":
             text += block["Text"] + "\n"
     return text
+def summarize_text(text):
+    prompt = "Summarize these sentences into less than one minute of speaking and don't provide any text except the summarisation. "
+    prompt += text
+    response = gemini_client.models.generate_content(
+    model="gemini-2.0-flash-lite", contents=prompt
+    )
+    return response.text
 
 def get_text_from_pdf(key):
     try:
@@ -47,7 +55,9 @@ def get_text_from_pdf(key):
         response = is_job_complete(job_id)
 
         if response.get("JobStatus") == "SUCCEEDED":
-            return extract_text_from_response(response)
+            text = extract_text_from_response(response)
+            text = summarize_text(text)
+            return text
         else:
             return "Error"
     except:
