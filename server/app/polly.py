@@ -1,38 +1,32 @@
 import boto3
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
-from pydantic import BaseModel
+from app.config import settings
 
-app = FastAPI()
+polly_client = boto3.client("polly", region_name="ap-southeast-1")
+s3_client = boto3.client(
+    "s3",
+    region_name=settings.AWS_REGION,
+    endpoint_url=f"https://s3-{settings.AWS_REGION}.amazonaws.com",
+)
 
-
-# Use IAM role on EC2, so no need for explicit AWS credentials
-polly_client = boto3.client("polly", region_name="us-east-1")
-textract = boto3.client('textract')
-s3 = boto3.client('s3')
-
-# Request model
-class PollyRequest(BaseModel):
-    text: str
-
-
-@app.post("/polly")
-async def generate_speech(request: PollyRequest):
-    """Convert text to speech using Amazon Polly and return the MP3 file."""
-    if not request.text:
-        raise HTTPException(status_code=400, detail="No text provided")
-
-    response = polly_client.synthesize_speech(
-        Text=request.text, OutputFormat="mp3", VoiceId="Joanna"
+def generate_voice_and_mark(text):
+    voice_response = polly_client.synthesize_speech(
+        Text=text,
+        TextType='text',
+        OutputFormat='mp3',
+        VoiceId='Joanna', 
+    )
+    mark_response = polly_client.synthesize_speech(
+        Text=text,
+        TextType='text',
+        VoiceId='Joanna', 
+        OutputFormat='json',
+        SpeechMarkTypes=["word"]
     )
 
-    speech_path = "speech.mp3"
-    with open(speech_path, "wb") as f:
-        f.write(response["AudioStream"].read())
-
-    return FileResponse(speech_path, media_type="audio/mpeg", filename="speech.mp3")
-
-
-@app.get("/")
-def root():
-    return {"message": "FastAPI Polly server is running!"}
+    # Save the audio stream to a file
+    audio_stream = voice_response['AudioStream']
+    with open("output.mp3", "wb") as f:
+        f.write(audio_stream.read())
+    audio_stream = mark_response['AudioStream']
+    with open("mark.marks", "wb") as f:
+        f.write(audio_stream.read())
