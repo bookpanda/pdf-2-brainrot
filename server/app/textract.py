@@ -7,11 +7,7 @@ textract_client = boto3.client(
     'textract',
     region_name=settings.AWS_REGION,
 )
-s3_client = boto3.client(
-    "s3",
-    region_name=settings.AWS_REGION,
-    endpoint_url=f"https://s3-{settings.AWS_REGION}.amazonaws.com",
-)
+
 gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
 def start_text_detection(document):
