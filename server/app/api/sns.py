@@ -3,7 +3,10 @@ import urllib.parse
 import requests
 from fastapi import APIRouter, Request
 
+from app.data.s3 import upload_videos_to_s3
+from app.polly import generate_voice_and_mark
 from app.textract import get_text_from_pdf
+from app.video_generation import generate_brainrot
 
 router = APIRouter()
 
@@ -25,11 +28,17 @@ async def sns_webhook(request: Request):
         # print(f"Received SNS Event: {sns_message}")
         if sns_message["Records"][0]["eventName"] == "ObjectCreated:Put":
             key = sns_message["Records"][0]["s3"]["object"]["key"]
-            prefix = key.split("/")[0]
+            decoded_key = urllib.parse.unquote_plus(key)
+            prefix, key = decoded_key.split("/")
             if(prefix == 'pdfs'):
-                decoded_key = urllib.parse.unquote_plus(key)
                 text = get_text_from_pdf(decoded_key)
-                if(text == "Error"):return {"message": "Failed to extract text from PDF"}
+                if(text == "Error"):
+                    return {"message": "Textract Error"}
+                if(generate_voice_and_mark(text) == 'Error'):
+                    return {"message": "Polly Error"}
+                generate_brainrot()
+                upload_videos_to_s3(key)
+
 
 
     return {"message": "SNS notification received"}
