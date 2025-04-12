@@ -3,11 +3,6 @@ from app.config import settings
 from botocore.exceptions import BotoCoreError, ClientError
 
 polly_client = boto3.client("polly", region_name="ap-southeast-1")
-s3_client = boto3.client(
-    "s3",
-    region_name=settings.AWS_REGION,
-    endpoint_url=f"https://s3-{settings.AWS_REGION}.amazonaws.com",
-)
 
 def generate_voice_and_mark(text):
     try:
