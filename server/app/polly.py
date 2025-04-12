@@ -1,5 +1,6 @@
 import boto3
 from app.config import settings
+from botocore.exceptions import BotoCoreError, ClientError
 
 polly_client = boto3.client("polly", region_name="ap-southeast-1")
 s3_client = boto3.client(
@@ -9,24 +10,37 @@ s3_client = boto3.client(
 )
 
 def generate_voice_and_mark(text):
-    voice_response = polly_client.synthesize_speech(
-        Text=text,
-        TextType='text',
-        OutputFormat='mp3',
-        VoiceId='Joanna', 
-    )
-    mark_response = polly_client.synthesize_speech(
-        Text=text,
-        TextType='text',
-        VoiceId='Joanna', 
-        OutputFormat='json',
-        SpeechMarkTypes=["word"]
-    )
+    try:
+        voice_response = polly_client.synthesize_speech(
+            Text=text,
+            TextType='text',
+            OutputFormat='mp3',
+            VoiceId='Joanna'
+        )
 
-    # Save the audio stream to a file
-    audio_stream = voice_response['AudioStream']
-    with open("raw.mp3", "wb") as f:
-        f.write(audio_stream.read())
-    audio_stream = mark_response['AudioStream']
-    with open("mark.marks", "wb") as f:
-        f.write(audio_stream.read())
+        with open("raw.mp3", "wb") as f:
+            f.write(voice_response['AudioStream'].read())
+        print("Audio saved successfully.")
+
+    except (BotoCoreError, ClientError) as e:
+        print("Failed to generate or save audio:", e)
+        return "Error"
+
+    try:
+        mark_response = polly_client.synthesize_speech(
+            Text=text,
+            TextType='text',
+            VoiceId='Joanna',
+            OutputFormat='json',
+            SpeechMarkTypes=["word"]
+        )
+
+        with open("mark.marks", "wb") as f:
+            f.write(mark_response['AudioStream'].read())
+        print("Speech marks saved successfully.")
+
+    except (BotoCoreError, ClientError) as e:
+        print("Failed to generate or save speech marks:", e)
+        return "Error"
+
+    return "Success"
