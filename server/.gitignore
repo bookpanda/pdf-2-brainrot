@@ -2,6 +2,3 @@
 *.mp3
 *.marks
 *.mp4
-
-# Don't ignore files that start with "minecraft"
-!minecraft*.mp4
