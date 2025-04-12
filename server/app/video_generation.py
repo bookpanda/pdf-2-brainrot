@@ -104,7 +104,8 @@ def process_video(video_path, marks_path, voice_path):
 
 
 def generate_brainrot():
-    video_path = 'minecraft1.mp4'
+    random_number = np.random.randint(4)+1
+    video_path = f'minecraft{random_number}.mp4'
     voice_path = 'raw.mp3'
     marks_path = 'mark.marks'
 
