@@ -8,7 +8,8 @@ app = FastAPI()
 
 # Use IAM role on EC2, so no need for explicit AWS credentials
 polly_client = boto3.client("polly", region_name="us-east-1")
-
+textract = boto3.client('textract')
+s3 = boto3.client('s3')
 
 # Request model
 class PollyRequest(BaseModel):
