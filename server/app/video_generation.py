@@ -89,15 +89,15 @@ def add_voice_to_video(video_path, voice_path):
 
 
     # Save the new video with your voice added
-    video_clip.write_videofile("final_result.mp4", codec="libx264")
+    video_clip.write_videofile("brainrotted.mp4", codec="libx264")
     return 0
 def process_video(video_path, marks_path, voice_path):
     add_text_to_video(video_path, marks_path, voice_path)
     add_voice_to_video("output_video_with_text.mp4", voice_path)
 
-if __name__ == "__main__":
+def generate_brainrot():
     video_path = 'minecraft1.mp4'
-    voice_path = 'test.mp3'
-    marks_path = 'test.marks'
+    voice_path = 'raw.mp3'
+    marks_path = 'mark.marks'
 
     process_video(video_path, marks_path, voice_path)
