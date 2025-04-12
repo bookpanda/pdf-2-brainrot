@@ -25,7 +25,7 @@ def generate_voice_and_mark(text):
 
     # Save the audio stream to a file
     audio_stream = voice_response['AudioStream']
-    with open("output.mp3", "wb") as f:
+    with open("raw.mp3", "wb") as f:
         f.write(audio_stream.read())
     audio_stream = mark_response['AudioStream']
     with open("mark.marks", "wb") as f:
