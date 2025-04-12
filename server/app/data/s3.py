@@ -108,3 +108,15 @@ def get_url_by_key(key: str) -> str:
                 status_code=500,
                 detail=f"Error generating presigned URL: {e}",
             )
+
+
+def upload_videos_to_s3(key):
+    key = key.split(".")[0]+".mp4"
+    s3_key = f"videos/{key}"
+    
+    try:
+        s3_client.upload_file("brainrotted.mp4", settings.AWS_BUCKET_NAME, s3_key)
+        print(f"Successfully uploaded {key}")
+    except Exception as e:
+        print(f"Error uploading {key}")
+
