@@ -44,12 +44,12 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
         )
 
 
-def get_files_in_folder(folder: str) -> list[str]:
+def get_files_in_folder(folder: str) -> list[dict]:
     """
-    List all files in a specific S3 folder.
+    List the 6 latest files in a specific S3 folder.
 
     :param folder: The folder path in the S3 bucket
-    :return: List of file names
+    :return: List of file metadata (key and presigned URL)
     """
     try:
         response = s3_client.list_objects_v2(
@@ -58,6 +58,15 @@ def get_files_in_folder(folder: str) -> list[str]:
         )
 
         if "Contents" in response:
+            files = [
+                item for item in response["Contents"]
+                if item["Key"] != folder + "/"  # ignore folder itself
+            ]
+
+            # Sort by LastModified (newest first) and take the latest 6
+            files.sort(key=lambda x: x["LastModified"], reverse=True)
+            latest_files = files[:6]
+
             return [
                 {
                     "key": item["Key"],
@@ -67,8 +76,7 @@ def get_files_in_folder(folder: str) -> list[str]:
                         ExpiresIn=3600,
                     ),
                 }
-                for item in response["Contents"]
-                if item["Key"] != folder + "/"  # ignore folder itself
+                for item in latest_files
             ]
         else:
             return []
@@ -77,6 +85,7 @@ def get_files_in_folder(folder: str) -> list[str]:
             status_code=500,
             detail=f"Error listing files in folder '{folder}': {e}",
         )
+
 
 
 def get_url_by_key(key: str) -> str:
