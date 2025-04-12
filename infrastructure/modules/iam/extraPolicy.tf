@@ -25,7 +25,8 @@ resource "aws_iam_policy" "polly_policy" {
       {
         Action = [
           "polly:StartSpeechSynthesisTask",
-          "polly:GetSpeechSynthesisTask"
+          "polly:GetSpeechSynthesisTask",
+          "polly:SynthesizeSpeech"
         ]
         Effect   = "Allow"
         Resource = "*"
