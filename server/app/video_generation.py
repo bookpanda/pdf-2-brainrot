@@ -22,26 +22,34 @@ def add_text_to_video(video_path, marks_path, voice_path):
     fps = cap.get(cv2.CAP_PROP_FPS)
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    target_width, target_height = int(frame_width * 0.5), int(frame_height * 0.5)
+
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
     out = cv2.VideoWriter(
-        "./generated/output_video_with_text.mp4",
+        "./generated/output_video_with_text.mkv",
         fourcc,
         fps,
-        (frame_width, frame_height),
+        (target_width, target_height),
     )
 
-    # Step 3: Process the video frame by frame
     frame_index = 0
     word_index = 0
     text = ""
     current_time = 0
+    skip_rate = 2  # Skip every 2 frames
     while cap.isOpened():
         if max_time < current_time:
             break
+        if frame_index % skip_rate != 0:
+            frame_index += 1
+            cap.read()
+            continue
+
         ret, frame = cap.read()
         if not ret:
             break
 
+        frame = cv2.resize(frame, (target_width, target_height))
         # Calculate the current time in seconds
         current_time = frame_index / fps
 
@@ -124,10 +132,7 @@ def add_text_to_video(video_path, marks_path, voice_path):
 
 
 def add_voice_to_video(video_path, voice_path):
-    # Load the video file
     video_clip = VideoFileClip(video_path)
-
-    # Load the audio (your voice recording)
     audio_clip = AudioFileClip(voice_path)
 
     if audio_clip.duration > video_clip.duration:
@@ -137,10 +142,7 @@ def add_voice_to_video(video_path, voice_path):
         # Trim the video to the audio's duration (if video is longer than the audio)
         video_clip = video_clip.subclip(0, audio_clip.duration)
 
-    # Set the trimmed audio to the video
     video_clip = video_clip.set_audio(audio_clip)
-
-    # Save the new video with your voice added
     video_clip.write_videofile("./generated/brainrotted.mp4", codec="libx264")
     return 0
 
@@ -151,4 +153,7 @@ def generate_brainrot():
     marks_path = "./generated/mark.marks"
 
     add_text_to_video(video_path, marks_path, voice_path)
-    # add_voice_to_video("output_video_with_text.mp4", voice_path)
+    add_voice_to_video("./generated/output_video_with_text.mkv", voice_path)
+
+
+# mp4 -> mp4: 1.50

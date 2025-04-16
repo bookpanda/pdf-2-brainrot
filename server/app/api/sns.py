@@ -46,7 +46,7 @@ async def sns_webhook(request: Request):
 
                 generate_brainrot()
                 upload_file_to_s3(
-                    "./generated/output_video_with_text.mp4",
+                    "./generated/brainrotted.mp4",
                     AUDIO_UPLOAD_FOLDER,
                     key.split(".")[0] + ".mp4",
                 )
