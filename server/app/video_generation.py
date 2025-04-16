@@ -152,6 +152,3 @@ def generate_brainrot():
 
     add_text_to_video(video_path, marks_path, voice_path)
     add_voice_to_video("./generated/output_video_with_text.mkv", voice_path)
-
-
-# mp4 -> mp4: 1.50
