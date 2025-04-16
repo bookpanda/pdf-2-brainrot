@@ -1,13 +1,11 @@
 from app.api import pdfs, sns, videos
 from app.config import settings
+from app.extensions import limiter
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 
 is_prod = settings.ENV == "production"
-limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(
     docs_url=None if is_prod else "/docs",

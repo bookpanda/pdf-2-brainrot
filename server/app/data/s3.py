@@ -59,7 +59,8 @@ def get_files_in_folder(folder: str) -> list[dict]:
 
         if "Contents" in response:
             files = [
-                item for item in response["Contents"]
+                item
+                for item in response["Contents"]
                 if item["Key"] != folder + "/"  # ignore folder itself
             ]
 
@@ -85,7 +86,6 @@ def get_files_in_folder(folder: str) -> list[dict]:
             status_code=500,
             detail=f"Error listing files in folder '{folder}': {e}",
         )
-
 
 
 def get_url_by_key(key: str) -> str:
@@ -119,13 +119,25 @@ def get_url_by_key(key: str) -> str:
             )
 
 
-def upload_videos_to_s3(key):
-    key = key.split(".")[0]+".mp4"
-    s3_key = f"videos/{key}"
-    
+def upload_file_to_s3(filepath: str, folder: str, key: str):
+    s3_key = f"{folder}/{key}"
+
     try:
-        s3_client.upload_file("brainrotted.mp4", settings.AWS_BUCKET_NAME, s3_key)
+        s3_client.upload_file(filepath, settings.AWS_BUCKET_NAME, s3_key)
         print(f"Successfully uploaded {key}")
     except Exception as e:
         print(f"Error uploading {key}")
 
+
+def download_file_from_s3(folder: str, key: str):
+    try:
+        print(f"Key: {folder}/{key}")
+        s3_client.download_file(settings.AWS_BUCKET_NAME, f"{folder}/{key}", f"{key}")
+        print(f"Downloaded: {f"{key}"}")
+        return f"{key}"
+    except Exception as e:
+        print(f"Error downloading {key}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error downloading file '{key}': {e}",
+        )

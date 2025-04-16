@@ -2,20 +2,21 @@ import json
 import urllib.parse
 
 import requests
-from app.data.s3 import upload_videos_to_s3
-from app.polly import generate_voice_and_mark
-from app.textract import get_text_from_pdf
+from app.config import settings
+from app.constants import VIDEO_UPLOAD_FOLDER
+from app.data.s3 import get_files_in_folder, upload_file_to_s3
+from app.extensions import limiter
+from app.services.polly import generate_voice_and_mark
+from app.services.textract import get_text_from_pdf
 from app.video_generation import generate_brainrot
-from config import settings
-from fastapi import APIRouter, Request
-from slowapi.decorator import limiter
+from fastapi import APIRouter, BackgroundTasks, Request
 
 router = APIRouter()
 
 
 @router.post("/webhook")
 @limiter.limit(f"{settings.RATE_LIMIT_PER_DAY}/day")
-async def sns_webhook(request: Request):
+async def sns_webhook(request: Request, background_tasks: BackgroundTasks):
     body = await request.json()
 
     # handle sns subscription confirmation
@@ -33,15 +34,34 @@ async def sns_webhook(request: Request):
             key = sns_message["Records"][0]["s3"]["object"]["key"]
             decoded_key = urllib.parse.unquote_plus(key)
             prefix, key = decoded_key.split("/")
+
+            files = get_files_in_folder(VIDEO_UPLOAD_FOLDER)
+            print(files)
+            for file in files:
+                if decoded_key == file["key"]:
+                    print(f"File already exists: {decoded_key}")
+                    return {"message": "File already exists"}
             print(f"Key from SNS: {key}, prefix: {prefix}")
             if prefix == "pdfs":
-                text = get_text_from_pdf(decoded_key)
-                print(f"Text from Textract: {text}")
-                if text == "Error":
-                    return {"message": "Textract Error"}
-                if generate_voice_and_mark(text) == "Error":
-                    return {"message": "Polly Error"}
-                generate_brainrot()
-                upload_videos_to_s3(key)
+                background_tasks.add_task(process_pdf, decoded_key)
+            return {"message": "ok"}
 
     return {"message": "SNS notification received"}
+
+
+def process_pdf(decoded_key: str):
+    prefix, key = decoded_key.split("/")
+    text = get_text_from_pdf(decoded_key)
+    print(f"Text from Textract: {text}")
+    if text == "Error":
+        return {"message": "Textract Error"}
+
+    if generate_voice_and_mark(text) == "Error":
+        return {"message": "Polly Error"}
+
+    generate_brainrot()
+    upload_file_to_s3(
+        "./generated/brainrotted.mp4",
+        VIDEO_UPLOAD_FOLDER,
+        key.split(".")[0] + ".mp4",
+    )
