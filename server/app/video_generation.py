@@ -60,18 +60,16 @@ def add_text_to_video(video_path, marks_path, voice_path):
                 word_index += 1
 
         font = cv2.FONT_HERSHEY_SIMPLEX
-        font_scale = 3
+        font_scale = 1.5
         font_color = (255, 255, 255)  # White
         thickness = 4
         outline_thickness = 6
 
-        # Get the text size (width, height)
         text_size = cv2.getTextSize(text, font, font_scale, thickness)[0]
         text_width, text_height = text_size
 
-        # Calculate the position to center the text
-        x = int((frame_width - text_width) / 2)  # Horizontal center
-        y = int((frame_height + text_height) / 2)  # Vertical center
+        x = (target_width - text_width) // 2
+        y = (target_height + text_height) // 2
 
         # Add the outline by drawing the text multiple times with different positions and a larger thickness
         # Outline effect (draw in all directions)
