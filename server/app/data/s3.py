@@ -1,7 +1,9 @@
+import random
 import uuid
 
 import boto3
 from app.config import settings
+from app.constants import BACKGROUND_UPLOAD_FOLDER
 from botocore.exceptions import ClientError, NoCredentialsError
 from fastapi import HTTPException
 
@@ -59,7 +61,8 @@ def get_files_in_folder(folder: str) -> list[dict]:
 
         if "Contents" in response:
             files = [
-                item for item in response["Contents"]
+                item
+                for item in response["Contents"]
                 if item["Key"] != folder + "/"  # ignore folder itself
             ]
 
@@ -85,7 +88,6 @@ def get_files_in_folder(folder: str) -> list[dict]:
             status_code=500,
             detail=f"Error listing files in folder '{folder}': {e}",
         )
-
 
 
 def get_url_by_key(key: str) -> str:
@@ -120,12 +122,48 @@ def get_url_by_key(key: str) -> str:
 
 
 def upload_videos_to_s3(key):
-    key = key.split(".")[0]+".mp4"
+    key = key.split(".")[0] + ".mp4"
     s3_key = f"videos/{key}"
-    
+
     try:
         s3_client.upload_file("brainrotted.mp4", settings.AWS_BUCKET_NAME, s3_key)
         print(f"Successfully uploaded {key}")
     except Exception as e:
         print(f"Error uploading {key}")
 
+
+def download_random_file_from_s3(file_name: str):
+    response = s3_client.list_objects_v2(
+        Bucket=settings.AWS_BUCKET_NAME, Prefix=BACKGROUND_UPLOAD_FOLDER
+    )
+
+    if "Contents" not in response:
+        print("No files found in folder.")
+        return None
+
+    files = [obj["Key"] for obj in response["Contents"] if not obj["Key"].endswith("/")]
+    if not files:
+        print("No valid files found.")
+        return None
+
+    chosen_key = random.choice(files)
+    print(f"Files: {files}, Chosen Key: {chosen_key}")
+
+    # file_name = chosen_key.split("/")[-1]
+    s3_client.download_file(settings.AWS_BUCKET_NAME, chosen_key, f"{file_name}")
+    print(f"Downloaded: {file_name}")
+    return f"{file_name}"
+
+
+def download_file_from_s3(folder: str, key: str):
+    try:
+        print(f"Key: {folder}/{key}")
+        s3_client.download_file(settings.AWS_BUCKET_NAME, f"{folder}/{key}", f"{key}")
+        print(f"Downloaded: {f"{key}"}")
+        return f"{key}"
+    except Exception as e:
+        print(f"Error downloading {key}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error downloading file '{key}': {e}",
+        )
