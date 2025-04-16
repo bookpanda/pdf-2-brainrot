@@ -4,7 +4,7 @@ from pathlib import Path
 import requests
 import streamlit as st
 
-# Add the project root to the Python path
+# Add the project root to the Python path (for streamlit to find the app module)
 sys.path.append(str(Path(__file__).parent.parent))
 from app.utils import get_presigned_url, get_processed_videos
 
