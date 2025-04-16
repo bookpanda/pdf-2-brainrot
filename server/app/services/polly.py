@@ -24,9 +24,9 @@ def generate_voice_and_mark(text, s3_key_prefix: str = AUDIO_UPLOAD_FOLDER):
         )
         print(f"Audio uploaded to S3: {audio_key}")
 
-        # with open("./generated/raw.mp3", "wb") as f:
-        #     f.write(voice_response["AudioStream"].read())
-        # print("Audio saved successfully.")
+        with open("./generated/raw.mp3", "wb") as f:
+            f.write(audio_stream)
+        print("Audio saved successfully.")
 
     except (BotoCoreError, ClientError) as e:
         print("Failed to generate or save audio:", e)

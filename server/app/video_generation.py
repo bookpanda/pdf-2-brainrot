@@ -2,6 +2,7 @@ import json
 
 import cv2
 import numpy as np
+from app.utils import get_random_file_path
 from moviepy.editor import AudioFileClip, VideoFileClip
 
 
@@ -14,6 +15,7 @@ def add_text_to_video(video_path, marks_path, voice_path):
             # Strip any leading/trailing whitespace and load the JSON object from the line
             word_data = json.loads(line.strip())
             words_data.append(word_data)
+
     cap = cv2.VideoCapture(video_path)
 
     # Get video information
@@ -22,7 +24,10 @@ def add_text_to_video(video_path, marks_path, voice_path):
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     out = cv2.VideoWriter(
-        "output_video_with_text.mp4", fourcc, fps, (frame_width, frame_height)
+        "./generated/output_video_with_text.mp4",
+        fourcc,
+        fps,
+        (frame_width, frame_height),
     )
 
     # Step 3: Process the video frame by frame
@@ -136,19 +141,14 @@ def add_voice_to_video(video_path, voice_path):
     video_clip = video_clip.set_audio(audio_clip)
 
     # Save the new video with your voice added
-    video_clip.write_videofile("brainrotted.mp4", codec="libx264")
+    video_clip.write_videofile("./generated/brainrotted.mp4", codec="libx264")
     return 0
 
 
-def process_video(video_path, marks_path, voice_path):
-    add_text_to_video(video_path, marks_path, voice_path)
-    add_voice_to_video("output_video_with_text.mp4", voice_path)
-
-
 def generate_brainrot():
-    random_number = np.random.randint(4) + 1
-    video_path = f"minecraft{random_number}.mp4"
-    voice_path = "raw.mp3"
-    marks_path = "mark.marks"
+    video_path = get_random_file_path("./videos")
+    voice_path = "./generated/raw.mp3"
+    marks_path = "./generated/mark.marks"
 
-    process_video(video_path, marks_path, voice_path)
+    add_text_to_video(video_path, marks_path, voice_path)
+    # add_voice_to_video("output_video_with_text.mp4", voice_path)
