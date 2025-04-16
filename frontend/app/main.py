@@ -1,6 +1,7 @@
 import requests
 import streamlit as st
-from app.utils import get_presigned_url, get_processed_videos
+
+from frontend.app.utils import get_presigned_url, get_processed_videos
 
 st.title("PDF to Brainrot")
 st.write("Hi yall! This is a simple app that converts PDF files to brainrot.")

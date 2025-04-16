@@ -1,5 +1,6 @@
 import requests
-from app.config import settings
+
+from frontend.app.config import settings
 
 
 def get_presigned_url(filename: str) -> (str, str):
