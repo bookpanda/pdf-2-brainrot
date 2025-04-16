@@ -13,16 +13,9 @@ def generate_voice_and_mark(text, s3_key_prefix: str = AUDIO_UPLOAD_FOLDER):
             Text=text, TextType="text", OutputFormat="mp3", VoiceId="Joanna"
         )
 
-        audio_stream = voice_response["AudioStream"].read()
-        audio_key = f"{s3_key_prefix}/raw.mp3"
-
-        s3_client.put_object(
-            Bucket=settings.AWS_BUCKET_NAME,
-            Key=audio_key,
-            Body=audio_stream,
-            ContentType="audio/mpeg",
-        )
-        print(f"Audio uploaded to S3: {audio_key}")
+        with open("raw.mp3", "wb") as f:
+            f.write(voice_response["AudioStream"].read())
+        print("Audio saved successfully.")
 
     except (BotoCoreError, ClientError) as e:
         print("Failed to generate or save audio:", e)

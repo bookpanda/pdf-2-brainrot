@@ -1,16 +1,13 @@
 import boto3
 
-# Step 1: Get the MediaConvert endpoint (only need to do this once)
 mc_client = boto3.client("mediaconvert", region_name="ap-southeast-1")
 endpoints = mc_client.describe_endpoints()
 endpoint_url = endpoints["Endpoints"][0]["Url"]
 
-# Step 2: Create the actual MediaConvert client with the custom endpoint
 mediaconvert = boto3.client(
     "mediaconvert", region_name="ap-southeast-1", endpoint_url=endpoint_url
 )
 
-# Step 3: Create a job to merge video and audio
 job = mediaconvert.create_job(
     Role="arn:aws:iam::YOUR_ACCOUNT_ID:role/MediaConvert_Default_Role",
     Settings={
