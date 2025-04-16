@@ -119,12 +119,11 @@ def get_url_by_key(key: str) -> str:
             )
 
 
-def upload_videos_to_s3(key):
-    key = key.split(".")[0] + ".mp4"
-    s3_key = f"videos/{key}"
+def upload_file_to_s3(filepath: str, folder: str, key: str):
+    s3_key = f"{folder}/{key}"
 
     try:
-        s3_client.upload_file("brainrotted.mp4", settings.AWS_BUCKET_NAME, s3_key)
+        s3_client.upload_file(filepath, settings.AWS_BUCKET_NAME, s3_key)
         print(f"Successfully uploaded {key}")
     except Exception as e:
         print(f"Error uploading {key}")

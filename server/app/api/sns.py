@@ -3,7 +3,8 @@ import urllib.parse
 
 import requests
 from app.config import settings
-from app.data.s3 import upload_videos_to_s3
+from app.constants import AUDIO_UPLOAD_FOLDER
+from app.data.s3 import upload_file_to_s3
 from app.extensions import limiter
 from app.services.polly import generate_voice_and_mark
 from app.services.textract import get_text_from_pdf
@@ -44,6 +45,10 @@ async def sns_webhook(request: Request):
                     return {"message": "Polly Error"}
 
                 generate_brainrot()
-                upload_videos_to_s3(key)
+                upload_file_to_s3(
+                    "./generated/output_video_with_text.mp4",
+                    AUDIO_UPLOAD_FOLDER,
+                    key.split(".")[0] + ".mp4",
+                )
 
     return {"message": "SNS notification received"}
