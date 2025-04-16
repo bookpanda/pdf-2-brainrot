@@ -44,12 +44,12 @@ def generate_presigned_url(folder: str, filename: str, file_type: str):
         )
 
 
-def get_files_in_folder(folder: str) -> list[str]:
+def get_files_in_folder(folder: str) -> list[dict]:
     """
-    List all files in a specific S3 folder.
+    List the 6 latest files in a specific S3 folder.
 
     :param folder: The folder path in the S3 bucket
-    :return: List of file names
+    :return: List of file metadata (key and presigned URL)
     """
     try:
         response = s3_client.list_objects_v2(
@@ -58,6 +58,15 @@ def get_files_in_folder(folder: str) -> list[str]:
         )
 
         if "Contents" in response:
+            files = [
+                item for item in response["Contents"]
+                if item["Key"] != folder + "/"  # ignore folder itself
+            ]
+
+            # Sort by LastModified (newest first) and take the latest 6
+            files.sort(key=lambda x: x["LastModified"], reverse=True)
+            latest_files = files[:6]
+
             return [
                 {
                     "key": item["Key"],
@@ -67,8 +76,7 @@ def get_files_in_folder(folder: str) -> list[str]:
                         ExpiresIn=3600,
                     ),
                 }
-                for item in response["Contents"]
-                if item["Key"] != folder + "/"  # ignore folder itself
+                for item in latest_files
             ]
         else:
             return []
@@ -77,6 +85,7 @@ def get_files_in_folder(folder: str) -> list[str]:
             status_code=500,
             detail=f"Error listing files in folder '{folder}': {e}",
         )
+
 
 
 def get_url_by_key(key: str) -> str:
@@ -108,3 +117,15 @@ def get_url_by_key(key: str) -> str:
                 status_code=500,
                 detail=f"Error generating presigned URL: {e}",
             )
+
+
+def upload_videos_to_s3(key):
+    key = key.split(".")[0]+".mp4"
+    s3_key = f"videos/{key}"
+    
+    try:
+        s3_client.upload_file("brainrotted.mp4", settings.AWS_BUCKET_NAME, s3_key)
+        print(f"Successfully uploaded {key}")
+    except Exception as e:
+        print(f"Error uploading {key}")
+

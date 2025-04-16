@@ -1,0 +1,38 @@
+import boto3
+from botocore.exceptions import BotoCoreError, ClientError
+
+polly_client = boto3.client("polly", region_name="ap-southeast-1")
+
+
+def generate_voice_and_mark(text):
+    try:
+        voice_response = polly_client.synthesize_speech(
+            Text=text, TextType="text", OutputFormat="mp3", VoiceId="Joanna"
+        )
+
+        with open("raw.mp3", "wb") as f:
+            f.write(voice_response["AudioStream"].read())
+        print("Audio saved successfully.")
+
+    except (BotoCoreError, ClientError) as e:
+        print("Failed to generate or save audio:", e)
+        return "Error"
+
+    try:
+        mark_response = polly_client.synthesize_speech(
+            Text=text,
+            TextType="text",
+            VoiceId="Joanna",
+            OutputFormat="json",
+            SpeechMarkTypes=["word"],
+        )
+
+        with open("mark.marks", "wb") as f:
+            f.write(mark_response["AudioStream"].read())
+        print("Speech marks saved successfully.")
+
+    except (BotoCoreError, ClientError) as e:
+        print("Failed to generate or save speech marks:", e)
+        return "Error"
+
+    return "Success"
