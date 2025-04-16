@@ -24,10 +24,10 @@ module "iam" {
   s3_policy_arn = module.s3.s3_policy_arn
 }
 
-module "vpc" {
-  source            = "./modules/vpc"
-  availability_zone = var.availability_zone
-}
+# module "vpc" {
+#   source            = "./modules/vpc"
+#   availability_zone = var.availability_zone
+# }
 
 # module "ec2" {
 #   source                   = "./modules/ec2"
