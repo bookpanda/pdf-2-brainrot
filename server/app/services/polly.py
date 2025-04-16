@@ -1,13 +1,11 @@
 import boto3
-from app.config import settings
-from app.constants import AUDIO_UPLOAD_FOLDER
 from botocore.exceptions import BotoCoreError, ClientError
 
 polly_client = boto3.client("polly", region_name="ap-southeast-1")
 s3_client = boto3.client("s3", region_name="ap-southeast-1")
 
 
-def generate_voice_and_mark(text, s3_key_prefix: str = AUDIO_UPLOAD_FOLDER):
+def generate_voice_and_mark(text):
     try:
         voice_response = polly_client.synthesize_speech(
             Text=text, TextType="text", OutputFormat="mp3", VoiceId="Joanna"

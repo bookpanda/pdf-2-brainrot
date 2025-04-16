@@ -5,8 +5,8 @@ import requests
 from app.config import settings
 from app.data.s3 import upload_videos_to_s3
 from app.extensions import limiter
-from app.polly import generate_voice_and_mark
-from app.textract import get_text_from_pdf
+from app.services.polly import generate_voice_and_mark
+from app.services.textract import get_text_from_pdf
 from app.video_generation import generate_brainrot
 from fastapi import APIRouter, Request
 
@@ -39,8 +39,10 @@ async def sns_webhook(request: Request):
                 print(f"Text from Textract: {text}")
                 if text == "Error":
                     return {"message": "Textract Error"}
+
                 if generate_voice_and_mark(text) == "Error":
                     return {"message": "Polly Error"}
+
                 generate_brainrot()
                 upload_videos_to_s3(key)
 
