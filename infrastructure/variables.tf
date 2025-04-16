@@ -34,8 +34,3 @@ variable "app_port" {
   type        = string
   default     = "8000"
 }
-
-variable "github_repo" {
-  description = "GitHub repo to clone in EC2"
-  type        = string
-}

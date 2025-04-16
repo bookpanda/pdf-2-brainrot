@@ -19,21 +19,17 @@ variable "s3_instance_profile_name" {
 }
 
 variable "region" {
-  type        = string
+  type = string
 }
 
 variable "app_name" {
-  type        = string
+  type = string
 }
 
 variable "app_port" {
-  type        = string
+  type = string
 }
 
 variable "bucket_name" {
-  type        = string
-}
-
-variable "github_repo" {
-  type        = string
+  type = string
 }
