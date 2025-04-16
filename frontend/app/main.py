@@ -42,15 +42,16 @@ if uploaded_file is not None:
 st.subheader("Processed Brainrot Shorts")
 video_files = get_processed_videos()
 
-video_files = get_processed_videos()
-
 if video_files:
+    print(f"video_files: {len(video_files)}")
     num_columns = 3
     columns = st.columns(num_columns)
 
-    for index, video in enumerate(video_files):
-        with columns[index % num_columns]:
-            st.video(video["url"])
-            st.write(f"**{video['key']}**")
+    for i in range(0, len(video_files), num_columns):
+        cols = st.columns(num_columns)
+        for j, video in enumerate(video_files[i : i + num_columns]):
+            with cols[j]:
+                st.video(video["url"])
+                st.write(f"**{video['key']}**")
 else:
     st.write("No processed videos available.")

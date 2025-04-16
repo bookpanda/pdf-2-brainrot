@@ -3,7 +3,7 @@ import urllib.parse
 
 import requests
 from app.config import settings
-from app.constants import AUDIO_UPLOAD_FOLDER
+from app.constants import VIDEO_UPLOAD_FOLDER
 from app.data.s3 import upload_file_to_s3
 from app.extensions import limiter
 from app.services.polly import generate_voice_and_mark
@@ -47,7 +47,7 @@ async def sns_webhook(request: Request):
                 generate_brainrot()
                 upload_file_to_s3(
                     "./generated/brainrotted.mp4",
-                    AUDIO_UPLOAD_FOLDER,
+                    VIDEO_UPLOAD_FOLDER,
                     key.split(".")[0] + ".mp4",
                 )
 
