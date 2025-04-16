@@ -3,7 +3,7 @@ import urllib.parse
 
 import requests
 from app.config import settings
-from app.constants import PDF_UPLOAD_FOLDER, VIDEO_UPLOAD_FOLDER
+from app.constants import VIDEO_UPLOAD_FOLDER
 from app.data.s3 import get_files_in_folder, upload_file_to_s3
 from app.extensions import limiter
 from app.services.polly import generate_voice_and_mark
