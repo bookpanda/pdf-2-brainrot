@@ -40,7 +40,7 @@ def extract_text_from_response(response):
     return text
 
 
-def summarize_text(text):
+def summarize_text(text) -> str:
     prompt = "Summarize the following sentences into 130-160 words. If the content exceeds one minute of speaking, condense it to stay close to the one-minute mark. Add brainrotted words like 'skibid,' 'Ohio,' 'rizz,' 'fanum tax,' etc., while keeping the overall tone casual but not childish. Limit the use of brainrotted words to one per every 2-3 sentences. Do not include any text other than the summarization."
     prompt += text
     response = gemini_client.models.generate_content(
@@ -49,7 +49,7 @@ def summarize_text(text):
     return response.text
 
 
-def get_text_from_pdf(key):
+def get_text_from_pdf(key) -> str:
     try:
         job_id = start_text_detection(key)
         response = is_job_complete(job_id)

@@ -2,13 +2,13 @@ import json
 import urllib.parse
 
 import requests
+from app.config import settings
 from app.data.s3 import upload_videos_to_s3
+from app.extensions import limiter
 from app.polly import generate_voice_and_mark
 from app.textract import get_text_from_pdf
 from app.video_generation import generate_brainrot
-from config import settings
 from fastapi import APIRouter, Request
-from slowapi.decorator import limiter
 
 router = APIRouter()
 
