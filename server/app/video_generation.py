@@ -36,14 +36,14 @@ def add_text_to_video(video_path, marks_path, voice_path):
     word_index = 0
     text = ""
     current_time = 0
-    skip_rate = 2  # Skip every 2 frames
+    # skip_rate = 2  # Skip every 2 frames
     while cap.isOpened():
         if max_time < current_time:
             break
-        if frame_index % skip_rate != 0:
-            frame_index += 1
-            cap.read()
-            continue
+        # if frame_index % skip_rate != 0:
+        #     frame_index += 1
+        #     cap.read()
+        #     continue
 
         ret, frame = cap.read()
         if not ret:
