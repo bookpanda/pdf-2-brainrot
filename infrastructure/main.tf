@@ -24,21 +24,20 @@ module "iam" {
   s3_policy_arn = module.s3.s3_policy_arn
 }
 
-module "vpc" {
-  source            = "./modules/vpc"
-  availability_zone = var.availability_zone
-}
+# module "vpc" {
+#   source            = "./modules/vpc"
+#   availability_zone = var.availability_zone
+# }
 
-module "ec2" {
-  source                   = "./modules/ec2"
-  ami                      = var.ami
-  region                   = var.region
-  app_name                 = var.app_name
-  app_port                 = var.app_port
-  bucket_name              = local.bucket_name
-  github_repo              = var.github_repo
-  vpc_id                   = module.vpc.vpc_id
-  vpc_name                 = module.vpc.vpc_name
-  backend_inet_id          = module.vpc.backend_inet_id
-  s3_instance_profile_name = module.s3.s3_instance_profile_name
-}
+# module "ec2" {
+#   source                   = "./modules/ec2"
+#   ami                      = var.ami
+#   region                   = var.region
+#   app_name                 = var.app_name
+#   app_port                 = var.app_port
+#   bucket_name              = local.bucket_name
+#   vpc_id                   = module.vpc.vpc_id
+#   vpc_name                 = module.vpc.vpc_name
+#   backend_inet_id          = module.vpc.backend_inet_id
+#   s3_instance_profile_name = module.s3.s3_instance_profile_name
+# }

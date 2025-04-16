@@ -16,6 +16,6 @@ output "bucket_name" {
   value = local.bucket_name
 }
 
-output "backend_ip" {
-  value = module.ec2.backend_ip
-}
+# output "backend_ip" {
+#   value = module.ec2.backend_ip
+# }
