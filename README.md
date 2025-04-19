@@ -40,7 +40,8 @@ terraform apply
 3. Run `poetry env activate` to activate the virtual environment
 4. Run `poetry env info --path` to get the path of the virtual environment
 5. In VSCode, `Ctrl + Shift + P` and type `Python: Select Interpreter`, select `Enter interpreter path...` and paste the path of the virtual environment. This will allow intellisense for the project
-6. Run `poetry run python run.py` to start the application
+6. Place your background `mp4` clips in `/server/videos` e.g. Minecraft parkour, Subway Surfers, etc.
+7. Run `poetry run python run.py` to start the application
 
 ## .env
 ```bash
