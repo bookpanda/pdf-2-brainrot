@@ -41,7 +41,7 @@ def extract_text_from_response(response):
 
 
 def summarize_text(text) -> str:
-    prompt = "Summarize the following sentences into 130-160 words. If the content exceeds one minute of speaking, condense it to stay close to the one-minute mark. Add brainrotted words like 'skibid,' 'Ohio,' 'rizz,' 'fanum tax,' etc., while keeping the overall tone casual but not childish. Limit the use of brainrotted words to one per every 2-3 sentences. Do not include any text other than the summarization."
+    prompt = settings.BRAINROT_PROMPT
     prompt += text
     response = gemini_client.models.generate_content(
         model="gemini-2.0-flash-lite", contents=prompt

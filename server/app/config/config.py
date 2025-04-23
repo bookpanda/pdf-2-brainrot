@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     AWS_REGION: str = os.getenv("AWS_REGION", "")
     AWS_BUCKET_NAME: str = os.getenv("AWS_BUCKET_NAME", "")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    BRAINROT_PROMPT: str = os.getenv("BRAINROT_PROMPT", "")
 
 
 settings = Settings()
